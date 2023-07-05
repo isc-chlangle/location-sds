@@ -3,12 +3,12 @@ entries:
   location-service:
   - apiVersion: v1
     appVersion: 1.16.0
-    created: "2023-07-05T16:14:28.712932-04:00"
+    created: "2023-07-05T16:25:30.658404-04:00"
     description: A Helm chart for Kubernetes
     digest: faaa7b0270c50084bfccc1455addda25e2602d5056cf0556097e807e4e4d11c0
     name: location-service
     type: application
     urls:
-    - https://isc-chlangle.github.io/location-sds/location-service/location-service-0.1.0.tgz
+    - https://isc-chlangle.github.io/location-sds/location-service-0.1.0.tgz
     version: 0.1.0
-generated: "2023-07-05T16:14:28.712229-04:00"
+generated: "2023-07-05T16:25:30.657843-04:00"
