@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: python-data-busybox
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: 1
+  selector: 
+    matchLabels: 
+      app: python-data-busybox 
+  template: 
+    metadata: 
+      labels: 
+        app: python-data-busybox
+    spec: 
+      imagePullSecrets:
+      {{- if .Values.requiredSecrets.intersystemsContainerRegistrySecret }}    
+      - name: {{ .Values.requiredSecrets.intersystemsContainerRegistrySecret }}
+      {{- end }}
+
+      containers:
+      - name: python-data-busybox-container
+        {{- if eq .Values.skaffold.enabled true }}
+        image: {{ .Values.skaffold.image }}
+        {{- else }}
+        image: {{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Chart.AppVersion }}
+        {{- end }}
+
+        env:
+        - name: BUSYBOX_IRIS_JDBC_URL
+          value: {{ .Values.jdbcConnectionString }}
+        - name: BUSYBOX_TABLE_NAME
+          value: {{ .Values.tableName }}
+        - name: BUSYBOX_INSERT_RATE
+          value: {{ .Values.frequency | int | quote}}
+        - name: IRIS_USERNAME
+          value: {{ .Values.irisUserName}}
+        - name: IRIS_PASSWORD
+          value: {{ .Values.irisPassword }}
+
+        resources:
+          requests:
+            cpu: {{ .Values.compute.main.cpu }}
+            memory: {{ .Values.compute.main.memory }}
+
+      {{- if .Values.compute.main.nodeTypeSelector }}
+      nodeSelector:
+        sds/node-type: {{ .Values.compute.main.nodeTypeSelector }}
+      {{- end }}
+      tolerations:
+      - key: sds/select-worker
+        value: select-worker
+        effect: NoSchedule
+
